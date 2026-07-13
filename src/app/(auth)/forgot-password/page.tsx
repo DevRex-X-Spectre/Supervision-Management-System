@@ -10,7 +10,7 @@ export default function ForgotPasswordPage() {
       <CardHeader>
         <CardTitle className="text-2xl">Reset your password</CardTitle>
         <CardDescription>
-          Enter the email linked to your Collins account. We will send a secure reset link if the
+          Enter the email linked to your NAUB Prism account. We will send a secure reset link if the
           account exists.
         </CardDescription>
       </CardHeader>

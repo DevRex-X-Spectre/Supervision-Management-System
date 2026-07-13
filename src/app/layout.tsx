@@ -22,7 +22,8 @@ export const metadata: Metadata = {
   description:
     "Web-based interactive research supervision system for Nigerian Army University Biu. Connect students, supervisors, and project coordinators in one secure platform.",
   icons: {
-    icon: "/favicon.svg",
+    icon: "/naub-logo.png",
+    apple: "/naub-logo.png",
   },
 };
 

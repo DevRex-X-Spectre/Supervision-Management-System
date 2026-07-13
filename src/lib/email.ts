@@ -8,7 +8,7 @@ function getResend() {
   return new Resend(key);
 }
 
-const from = process.env.EMAIL_FROM ?? "Collins NAUB <onboarding@resend.dev>";
+const from = process.env.EMAIL_FROM ?? "NAUB Prism <onboarding@resend.dev>";
 
 export async function sendNotificationEmail(input: {
   to: string;
@@ -32,16 +32,16 @@ export async function sendNotificationEmail(input: {
       subject: `${INSTITUTION.systemName}: ${input.title}`,
       html: `
         <div style="font-family:Segoe UI,Arial,sans-serif;line-height:1.6;color:#0f172a;max-width:560px;margin:0 auto;padding:24px;">
-          <div style="border-bottom:3px solid #14532d;padding-bottom:12px;margin-bottom:20px;">
-            <strong style="color:#14532d;font-size:18px;">${INSTITUTION.systemName}</strong>
+          <div style="border-bottom:3px solid #c8102e;padding-bottom:12px;margin-bottom:20px;">
+            <strong style="color:#c8102e;font-size:18px;">${INSTITUTION.systemName}</strong>
             <div style="color:#64748b;font-size:13px;">${INSTITUTION.name}</div>
           </div>
           <p>Dear ${input.firstName},</p>
           <h2 style="font-size:18px;margin:16px 0 8px;">${input.title}</h2>
           <p style="color:#334155;">${input.body}</p>
           <p style="margin:24px 0;">
-            <a href="${href}" style="background:#14532d;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;display:inline-block;">
-              Open in Collins
+            <a href="${href}" style="background:#c8102e;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;display:inline-block;">
+              Open in NAUB Prism
             </a>
           </p>
           <p style="font-size:12px;color:#94a3b8;margin-top:32px;">
@@ -77,9 +77,9 @@ export async function sendPasswordResetEmail(input: {
     html: `
       <div style="font-family:Segoe UI,Arial,sans-serif;line-height:1.6;color:#0f172a;max-width:560px;margin:0 auto;padding:24px;">
         <p>Dear ${input.firstName},</p>
-        <p>We received a request to reset your Collins password for ${INSTITUTION.name}.</p>
+        <p>We received a request to reset your NAUB Prism password for ${INSTITUTION.name}.</p>
         <p>
-          <a href="${resetUrl}" style="background:#14532d;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;display:inline-block;">
+          <a href="${resetUrl}" style="background:#c8102e;color:#fff;padding:10px 16px;border-radius:8px;text-decoration:none;display:inline-block;">
             Reset password
           </a>
         </p>

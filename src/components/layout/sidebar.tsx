@@ -21,6 +21,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { INSTITUTION } from "@/lib/constants";
+import { Logo } from "@/components/shared/logo";
 import type { Role } from "@prisma/client";
 
 const icons = {
@@ -78,9 +79,7 @@ export function Sidebar({
         <div className="flex items-center justify-between gap-3 border-b border-white/10 px-5 py-5">
           <div className="min-w-0">
             <div className="flex items-center gap-2">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-naub-gold text-sm font-bold text-naub-ink">
-                C
-              </div>
+              <Logo size={36} />
               <div className="min-w-0">
                 <p className="truncate text-sm font-semibold tracking-wide">{INSTITUTION.systemName}</p>
                 <p className="truncate text-[11px] text-white/60">{INSTITUTION.shortName} Research</p>

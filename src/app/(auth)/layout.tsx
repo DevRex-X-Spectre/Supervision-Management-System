@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { INSTITUTION } from "@/lib/constants";
+import { Logo } from "@/components/shared/logo";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -8,9 +9,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <div className="flex min-h-screen flex-col justify-center bg-white px-5 py-10 sm:px-10 lg:px-14">
         <div className="mx-auto w-full max-w-md">
           <Link href="/" className="mb-8 flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-naub-green text-sm font-bold text-white">
-              C
-            </div>
+            <Logo size={40} />
             <div>
               <p className="text-sm font-semibold text-slate-900">{INSTITUTION.systemName}</p>
               <p className="text-xs text-slate-500">{INSTITUTION.shortName}</p>

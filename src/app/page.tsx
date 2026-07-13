@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { INSTITUTION } from "@/lib/constants";
+import { Logo } from "@/components/shared/logo";
 
 export default function LandingPage() {
   return (
@@ -17,9 +18,7 @@ export default function LandingPage() {
       <header className="absolute inset-x-0 top-0 z-20">
         <div className="mx-auto flex max-w-6xl items-center justify-between px-4 py-5 sm:px-6">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-naub-gold text-base font-bold text-naub-ink">
-              C
-            </div>
+            <Logo size={40} />
             <div>
               <p className="text-sm font-semibold text-white">{INSTITUTION.systemName}</p>
               <p className="text-xs text-white/70">{INSTITUTION.shortName}</p>
@@ -51,7 +50,7 @@ export default function LandingPage() {
               <span className="text-naub-gold">{INSTITUTION.name}</span>
             </h1>
             <p className="mt-5 max-w-xl text-base leading-relaxed text-white/80 sm:text-lg">
-              Collins replaces paper logbooks and delayed feedback with continuous progress
+              NAUB Prism replaces paper logbooks and delayed feedback with continuous progress
               tracking, structured reviews, secure document exchange, and real-time communication
               between students, supervisors, and project coordinators.
             </p>
@@ -176,7 +175,7 @@ export default function LandingPage() {
           <div>
             <h3 className="text-xl font-semibold text-slate-900">Ready to continue your research journey?</h3>
             <p className="mt-1 text-sm text-slate-600">
-              Sign in with your institutional account or register to join Collins.
+              Sign in with your institutional account or register to join NAUB Prism.
             </p>
           </div>
           <div className="flex gap-3">

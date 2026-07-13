@@ -16,7 +16,7 @@ const buttonVariants = cva(
           "border border-slate-300 bg-white text-slate-800 hover:bg-slate-50",
         ghost: "hover:bg-slate-100 text-slate-700",
         danger: "bg-red-600 text-white hover:bg-red-700",
-        gold: "bg-naub-gold text-naub-ink hover:bg-amber-400 font-semibold",
+        gold: "bg-naub-gold text-naub-ink hover:bg-emerald-500 font-semibold",
       },
       size: {
         default: "h-10 px-4 py-2",

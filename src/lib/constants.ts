@@ -1,9 +1,9 @@
 export const INSTITUTION = {
   name: "Nigerian Army University Biu",
   shortName: "NAUB",
-  systemName: "Collins",
+  systemName: "NAUB Prism",
   tagline: "Interactive Research Supervision System",
-  fullTitle: "Collins | NAUB Research Supervision",
+  fullTitle: "NAUB Prism | Research Supervision",
 };
 
 export const SUBMISSION_STATUS_COLORS: Record<string, string> = {

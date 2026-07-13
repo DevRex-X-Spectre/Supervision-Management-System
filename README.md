@@ -1,8 +1,8 @@
-# Collins
+# NAUB Prism
 
 **Interactive Research Supervision System** for **Nigerian Army University Biu (NAUB)**.
 
-Collins digitises academic research supervision for students, supervisors, and project coordinators with role-based access, progress submissions, structured feedback, real-time chat, milestones, deadlines, notifications, and institutional analytics.
+NAUB Prism digitises academic research supervision for students, supervisors, and project coordinators with role-based access, progress submissions, structured feedback, real-time chat, milestones, deadlines, notifications, and institutional analytics.
 
 ## Stack
 
@@ -30,7 +30,7 @@ Collins digitises academic research supervision for students, supervisors, and p
 - Coordinators see analytics and audit metadata only (no private chat body, no file contents)
 - In-app + email notifications
 - Global search and audit log for coordinators
-- Seed demo data in `prisma/seed-data.json` (delete when you no longer need demos)
+- Bootstrap a coordinator account into a clean database
 
 ## Project structure
 
@@ -45,7 +45,6 @@ src/
 prisma/
   schema.prisma
   seed.ts
-  seed-data.json        # Demo users/projects (safe to delete later)
 ```
 
 ## Local setup (you run installs)
@@ -53,11 +52,32 @@ prisma/
 ### 1. Install dependencies
 
 ```bash
-cd /home/spectre/Documents/Works/Projects/Collins
+cd /home/spectre/Documents/Works/Projects/naub-prism
 npm install
 ```
 
-### 2. Environment
+### 2. Start a local PostgreSQL database
+
+This repo includes a dedicated local Postgres container for development and testing. Use this for all feature work and mock-account testing so you never touch your live database.
+
+```bash
+npm run db:local:up
+```
+
+Default local database:
+
+```bash
+postgresql://postgres:postgres@localhost:5432/naub_prism_dev?schema=public
+```
+
+Useful commands:
+
+```bash
+npm run db:local:logs
+npm run db:local:down
+```
+
+### 3. Environment
 
 ```bash
 cp .env.example .env
@@ -65,14 +85,16 @@ cp .env.example .env
 
 Fill in:
 
-- `DATABASE_URL` (Neon Postgres connection string works for local + prod)
+- `DATABASE_URL` for local development should point to the local Postgres container above
 - `AUTH_SECRET` / `NEXTAUTH_SECRET` (`openssl rand -base64 32`)
 - Pusher keys
 - UploadThing token
 - Resend API key
 - Inngest keys (optional for local; jobs no-op until configured)
 
-### 3. Database
+For local development, keep production database credentials out of `.env`. Put production values only in your deployment platform environment settings.
+
+### 4. Database
 
 ```bash
 npx prisma generate
@@ -80,7 +102,24 @@ npx prisma db push
 npm run db:seed
 ```
 
-### 4. Run
+This will provision your local schema. The seed step now creates or updates only the bootstrap coordinator account.
+
+Set these in `.env`:
+
+```bash
+BOOTSTRAP_COORDINATOR_EMAIL=admin@gmail.com
+BOOTSTRAP_COORDINATOR_PASSWORD=Admin1234
+```
+
+Then run:
+
+```bash
+npm run db:init
+```
+
+That command pushes the schema and creates the coordinator account.
+
+### 5. Run
 
 ```bash
 npm run dev
@@ -88,7 +127,7 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000).
 
-### 5. Inngest local (optional)
+### 6. Inngest local (optional)
 
 ```bash
 npx inngest-cli@latest dev
@@ -96,21 +135,12 @@ npx inngest-cli@latest dev
 
 The app serves functions at `/api/inngest`.
 
-## Demo accounts (from seed)
+## Recommended environment strategy
 
-Default password: value of `SEED_DEFAULT_PASSWORD` or `Password123!`
-
-| Role | Email |
-| --- | --- |
-| Coordinator | coordinator@naub.edu.ng |
-| Supervisor | supervisor1@naub.edu.ng |
-| Supervisor | supervisor2@naub.edu.ng |
-| Student | student1@naub.edu.ng |
-| Student | student2@naub.edu.ng |
-| Student | student3@naub.edu.ng |
-| Student | student4@naub.edu.ng |
-
-To drop demo data later: delete `prisma/seed-data.json` (and clean the DB as needed).
+- Local development: Docker Postgres on `localhost:5432`
+- Staging or production: separate managed Postgres URL in provider env vars
+- Seed only your bootstrap coordinator into fresh databases
+- When going live, keep the code and schema the same and swap only `DATABASE_URL`
 
 ## Deployment (Vercel + Neon)
 
@@ -150,5 +180,5 @@ npm run db:seed
 ## Branding
 
 Institution: **Nigerian Army University Biu**  
-Product name: **Collins**  
+Product name: **NAUB Prism**  
 Theme: deep academic green + gold accents, mobile-first responsive UI.

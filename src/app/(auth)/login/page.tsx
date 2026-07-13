@@ -42,7 +42,7 @@ export default async function LoginPage() {
   return (
     <Card className="border border-slate-200/80 shadow-sm md:border-0 md:shadow-none">
       <CardHeader>
-        <CardTitle className="text-2xl">Sign in to Collins</CardTitle>
+        <CardTitle className="text-2xl">Sign in to NAUB Prism</CardTitle>
         <CardDescription>
           Access your research workspace as a student, supervisor, or coordinator.
         </CardDescription>

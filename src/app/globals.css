@@ -7,15 +7,15 @@
 :root {
   --background: #f4f7f5;
   --foreground: #0f172a;
-  --naub-green: #14532d;
-  --naub-green-dark: #0f3d22;
-  --naub-green-soft: #ecfdf3;
-  --naub-gold: #d4a017;
-  --naub-ink: #0b1f14;
+  --naub-green: #c8102e;
+  --naub-green-dark: #8b0a1f;
+  --naub-green-soft: #fef2f2;
+  --naub-gold: #10b981;
+  --naub-ink: #1e3a52;
   --card: #ffffff;
   --muted: #64748b;
   --border: #e2e8f0;
-  --ring: rgba(20, 83, 45, 0.28);
+  --ring: rgba(200, 16, 46, 0.28);
 }
 
 * {
@@ -34,23 +34,23 @@ body {
 }
 
 ::selection {
-  background: rgba(20, 83, 45, 0.18);
+  background: rgba(200, 16, 46, 0.18);
 }
 
 /* Subtle academic grid on marketing pages */
 .hero-grid {
   background-image:
-    radial-gradient(circle at 20% 20%, rgba(212, 160, 23, 0.12), transparent 35%),
-    radial-gradient(circle at 80% 0%, rgba(20, 83, 45, 0.16), transparent 40%),
-    linear-gradient(to bottom, #0b1f14, #14532d 55%, #0f3d22);
+    radial-gradient(circle at 20% 20%, rgba(16, 185, 129, 0.12), transparent 35%),
+    radial-gradient(circle at 80% 0%, rgba(200, 16, 46, 0.16), transparent 40%),
+    linear-gradient(to bottom, #1e3a52, #c8102e 55%, #8b0a1f);
 }
 
 /* Auth split brand panel (form left, brand right) */
 .auth-brand-panel {
   background:
-    radial-gradient(ellipse 80% 60% at 90% 10%, rgba(212, 160, 23, 0.18), transparent 50%),
+    radial-gradient(ellipse 80% 60% at 90% 10%, rgba(16, 185, 129, 0.18), transparent 50%),
     radial-gradient(ellipse 70% 50% at 10% 90%, rgba(255, 255, 255, 0.06), transparent 45%),
-    linear-gradient(160deg, #0b1f14 0%, #14532d 48%, #0f3d22 100%);
+    linear-gradient(160deg, #1e3a52 0%, #c8102e 48%, #8b0a1f 100%);
 }
 
 .auth-brand-shapes::before,
@@ -66,7 +66,7 @@ body {
   height: 28rem;
   right: -6rem;
   top: -4rem;
-  background: radial-gradient(circle, rgba(212, 160, 23, 0.08), transparent 65%);
+  background: radial-gradient(circle, rgba(16, 185, 129, 0.08), transparent 65%);
 }
 
 .auth-brand-shapes::after {
