@@ -6,9 +6,9 @@ const f = createUploadthing();
 
 export const ourFileRouter = {
   researchDocument: f({
-    pdf: { maxFileSize: "10MB", maxFileCount: 5 },
+    pdf: { maxFileSize: "16MB", maxFileCount: 5 },
     "application/vnd.openxmlformats-officedocument.wordprocessingml.document": {
-      maxFileSize: "10MB",
+      maxFileSize: "16MB",
       maxFileCount: 5,
     },
   })

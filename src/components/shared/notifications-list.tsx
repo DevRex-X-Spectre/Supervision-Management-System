@@ -41,7 +41,7 @@ export function NotificationsList({ items }: { items: NotificationItem[] }) {
           variant="outline"
           size="sm"
           disabled={pending}
-          onClick={() => start(() => markAllNotificationsReadAction())}
+          onClick={() => start(() => { void markAllNotificationsReadAction(); })}
         >
           Mark all as read
         </Button>
@@ -65,7 +65,7 @@ export function NotificationsList({ items }: { items: NotificationItem[] }) {
                   <Button asChild size="sm" variant="outline">
                     <Link
                       href={n.link}
-                      onClick={() => start(() => markNotificationReadAction(n.id))}
+                      onClick={() => start(() => { void markNotificationReadAction(n.id); })}
                     >
                       Open
                     </Link>
@@ -75,7 +75,7 @@ export function NotificationsList({ items }: { items: NotificationItem[] }) {
                   <Button
                     size="sm"
                     variant="ghost"
-                    onClick={() => start(() => markNotificationReadAction(n.id))}
+                    onClick={() => start(() => { void markNotificationReadAction(n.id); })}
                   >
                     Mark read
                   </Button>

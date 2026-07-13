@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/session";
 import { announcementSchema } from "@/lib/validations/users";
-import { createNotifications, createNotification } from "@/lib/notifications";
+import { createNotifications } from "@/lib/notifications";
 import { writeAuditLog } from "@/lib/audit";
 import { withDatabaseFallback } from "@/lib/db-error";
 import type { ActionResult } from "@/types";

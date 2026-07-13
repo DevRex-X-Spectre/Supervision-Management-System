@@ -26,15 +26,16 @@ export const deadlineReminders = inngest.createFunction(
     let sent = 0;
     for (const d of deadlines) {
       if (!d.project?.studentId) continue;
-      const overdue = d.dueAt < now;
+      const dueAt = new Date(d.dueAt);
+      const overdue = dueAt < now;
       await step.run(`notify-${d.id}`, async () => {
         await createNotification({
           userId: d.project!.studentId,
           type: "DEADLINE",
           title: overdue ? "Overdue research deadline" : "Upcoming research deadline",
           body: overdue
-            ? `"${d.title}" was due on ${d.dueAt.toLocaleDateString()}. Please submit or contact your supervisor.`
-            : `"${d.title}" is due on ${d.dueAt.toLocaleDateString()}. Stay on track with your research plan.`,
+            ? `"${d.title}" was due on ${dueAt.toLocaleDateString()}. Please submit or contact your supervisor.`
+            : `"${d.title}" is due on ${dueAt.toLocaleDateString()}. Stay on track with your research plan.`,
           link: "/student/project",
           relatedEntityType: "Deadline",
           relatedEntityId: d.id,

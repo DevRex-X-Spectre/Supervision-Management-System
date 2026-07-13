@@ -1,17 +1,19 @@
 import type { Metadata } from "next";
-import { DM_Sans, Fraunces } from "next/font/google";
+import localFont from "next/font/local";
 import { Toaster } from "sonner";
 import { INSTITUTION } from "@/lib/constants";
 import "./globals.css";
 
-const sans = DM_Sans({
-  subsets: ["latin"],
+const sans = localFont({
+  src: "./fonts/DMSans.woff2",
   variable: "--font-sans",
+  display: "swap",
 });
 
-const display = Fraunces({
-  subsets: ["latin"],
+const display = localFont({
+  src: "./fonts/Fraunces.woff2",
   variable: "--font-display",
+  display: "swap",
 });
 
 export const metadata: Metadata = {

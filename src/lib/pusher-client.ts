@@ -14,7 +14,7 @@ export function getPusherClient() {
 
   const key = process.env.NEXT_PUBLIC_PUSHER_KEY;
   const cluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER ?? "mt1";
-  if (!isConfigured(key)) return null;
+  if (!key || !isConfigured(key)) return null;
 
   if (!client) {
     client = new PusherClient(key, {

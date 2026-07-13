@@ -5,10 +5,8 @@ import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { StatusBadge } from "@/components/ui/status-badge";
 import { formatDateTime, fullName, statusLabel } from "@/lib/utils";
 import { SubmissionsChart } from "@/components/shared/analytics-charts";
-
 export const metadata = { title: "Coordinator dashboard" };
 
 export default async function CoordinatorDashboardPage() {

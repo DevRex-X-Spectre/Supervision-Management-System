@@ -2,14 +2,14 @@
 
 import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
-import { requireUser, assertRole } from "@/lib/session";
+import { requireUser } from "@/lib/session";
 import { submissionSchema, feedbackSchema } from "@/lib/validations/submission";
 import { writeAuditLog } from "@/lib/audit";
 import { createNotification } from "@/lib/notifications";
 import type { ActionResult } from "@/types";
 
 export async function createSubmissionAction(
-  _prev: ActionResult | null,
+  _prev: ActionResult<{ id: string }> | null,
   formData: FormData
 ): Promise<ActionResult<{ id: string }>> {
   const user = await requireUser(["STUDENT"]);

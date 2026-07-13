@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { Users, ClipboardList, CheckCircle2, MessageSquare } from "lucide-react";
+import { Users, ClipboardList, CheckCircle2 } from "lucide-react";
 import { requireUser } from "@/lib/session";
 import { getSupervisorDashboardStats } from "@/features/analytics/queries";
 import { PageHeader } from "@/components/ui/page-header";

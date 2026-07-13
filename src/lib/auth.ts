@@ -1,4 +1,5 @@
 import NextAuth from "next-auth";
+import "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
@@ -32,6 +33,7 @@ declare module "next-auth" {
     title?: string | null;
     avatarUrl?: string | null;
     assignedSupervisorId?: string | null;
+    emailVerified?: Date | null;
   }
 }
 
@@ -132,6 +134,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         title: token.title,
         avatarUrl: token.avatarUrl,
         assignedSupervisorId: token.assignedSupervisorId,
+        emailVerified: null,
       };
       return session;
     },

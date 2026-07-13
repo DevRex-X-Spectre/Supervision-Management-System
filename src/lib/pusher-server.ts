@@ -1,6 +1,6 @@
 import Pusher from "pusher";
 
-function isConfigured(value?: string) {
+function isConfigured(value?: string): value is string {
   if (!value) return false;
   const normalized = value.trim().toLowerCase();
   return !normalized.startsWith("your-pusher-");
