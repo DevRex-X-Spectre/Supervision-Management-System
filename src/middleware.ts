@@ -1,13 +1,19 @@
-import { auth } from "@/lib/auth";
+import { getToken } from "next-auth/jwt";
+import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
 const publicPaths = ["/", "/login", "/register", "/forgot-password", "/reset-password"];
 
-export default auth((req) => {
+export default async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
-  const isLoggedIn = !!req.auth?.user;
-  const role = req.auth?.user?.role;
-  const status = req.auth?.user?.status;
+  const token = await getToken({
+    req,
+    secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
+    secureCookie: req.nextUrl.protocol === "https:",
+  });
+  const isLoggedIn = !!token;
+  const role = typeof token?.role === "string" ? token.role : undefined;
+  const status = typeof token?.status === "string" ? token.status : undefined;
 
   const isPublic =
     publicPaths.includes(pathname) ||
@@ -48,7 +54,7 @@ export default auth((req) => {
   }
 
   return NextResponse.next();
-});
+}
 
 function roleHome(role: string) {
   if (role === "STUDENT") return "/student";
