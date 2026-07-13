@@ -1,0 +1,170 @@
+{
+  "_comment": "Demo seed data for Collins (NAUB). Delete this file after production cutover if you no longer need demo accounts. Re-seed with: npm run db:seed",
+  "institution": "Nigerian Army University Biu",
+  "users": [
+    {
+      "email": "coordinator@naub.edu.ng",
+      "firstName": "Amina",
+      "lastName": "Bello",
+      "role": "COORDINATOR",
+      "department": "Research and Postgraduate Studies",
+      "staffId": "NAUB-CORD-001",
+      "title": "Dr.",
+      "phone": "+2348000000001"
+    },
+    {
+      "email": "supervisor1@naub.edu.ng",
+      "firstName": "Ibrahim",
+      "lastName": "Musa",
+      "role": "SUPERVISOR",
+      "department": "Computer Science",
+      "staffId": "NAUB-SUP-001",
+      "title": "Prof.",
+      "specialization": "Software Engineering and Distributed Systems",
+      "phone": "+2348000000002"
+    },
+    {
+      "email": "supervisor2@naub.edu.ng",
+      "firstName": "Fatima",
+      "lastName": "Abdullahi",
+      "role": "SUPERVISOR",
+      "department": "Computer Science",
+      "staffId": "NAUB-SUP-002",
+      "title": "Dr.",
+      "specialization": "Artificial Intelligence and Machine Learning",
+      "phone": "+2348000000003"
+    },
+    {
+      "email": "student1@naub.edu.ng",
+      "firstName": "Chinedu",
+      "lastName": "Okeke",
+      "role": "STUDENT",
+      "department": "Computer Science",
+      "matricNumber": "NAUB/CS/20/001",
+      "phone": "+2348000000011"
+    },
+    {
+      "email": "student2@naub.edu.ng",
+      "firstName": "Hauwa",
+      "lastName": "Yusuf",
+      "role": "STUDENT",
+      "department": "Computer Science",
+      "matricNumber": "NAUB/CS/20/002",
+      "phone": "+2348000000012"
+    },
+    {
+      "email": "student3@naub.edu.ng",
+      "firstName": "Tunde",
+      "lastName": "Adeyemi",
+      "role": "STUDENT",
+      "department": "Computer Science",
+      "matricNumber": "NAUB/CS/21/015",
+      "phone": "+2348000000013"
+    },
+    {
+      "email": "student4@naub.edu.ng",
+      "firstName": "Ngozi",
+      "lastName": "Eze",
+      "role": "STUDENT",
+      "department": "Computer Science",
+      "matricNumber": "NAUB/CS/21/022",
+      "phone": "+2348000000014"
+    }
+  ],
+  "assignments": [
+    { "studentEmail": "student1@naub.edu.ng", "supervisorEmail": "supervisor1@naub.edu.ng" },
+    { "studentEmail": "student2@naub.edu.ng", "supervisorEmail": "supervisor1@naub.edu.ng" },
+    { "studentEmail": "student3@naub.edu.ng", "supervisorEmail": "supervisor2@naub.edu.ng" },
+    { "studentEmail": "student4@naub.edu.ng", "supervisorEmail": "supervisor2@naub.edu.ng" }
+  ],
+  "milestoneTemplates": [
+    {
+      "name": "Research Proposal",
+      "description": "Submit a complete research proposal covering problem statement, objectives, scope, and methodology.",
+      "sortOrder": 1,
+      "defaultDays": 30
+    },
+    {
+      "name": "Literature Review",
+      "description": "Comprehensive review of related work and theoretical foundations.",
+      "sortOrder": 2,
+      "defaultDays": 45
+    },
+    {
+      "name": "Chapter 1: Introduction",
+      "description": "Background, problem statement, aims, objectives, significance, and structure.",
+      "sortOrder": 3,
+      "defaultDays": 30
+    },
+    {
+      "name": "Chapter 2: Literature Review",
+      "description": "Expanded literature chapter aligned with approved proposal.",
+      "sortOrder": 4,
+      "defaultDays": 40
+    },
+    {
+      "name": "Chapter 3: Methodology",
+      "description": "Research design, methods, tools, and evaluation approach.",
+      "sortOrder": 5,
+      "defaultDays": 35
+    },
+    {
+      "name": "Chapter 4: Implementation and Results",
+      "description": "System or study implementation with results and analysis.",
+      "sortOrder": 6,
+      "defaultDays": 50
+    },
+    {
+      "name": "Chapter 5: Conclusion and Recommendations",
+      "description": "Summary of findings, contributions, limitations, and future work.",
+      "sortOrder": 7,
+      "defaultDays": 25
+    },
+    {
+      "name": "Final Dissertation",
+      "description": "Complete bound dissertation ready for external review.",
+      "sortOrder": 8,
+      "defaultDays": 20
+    }
+  ],
+  "projects": [
+    {
+      "studentEmail": "student1@naub.edu.ng",
+      "title": "Intelligent Research Progress Tracking for Nigerian Universities",
+      "topic": "Educational Technology",
+      "abstract": "This research designs and evaluates a digital supervision platform that improves feedback turnaround and milestone completion rates for undergraduate final-year projects.",
+      "sessionYear": "2025/2026"
+    },
+    {
+      "studentEmail": "student2@naub.edu.ng",
+      "title": "Secure Document Workflow for Academic Supervision",
+      "topic": "Information Security",
+      "abstract": "A study of secure file handling, access control, and audit trails in research supervision systems used by tertiary institutions.",
+      "sessionYear": "2025/2026"
+    },
+    {
+      "studentEmail": "student3@naub.edu.ng",
+      "title": "Machine Learning Approaches for Student Progress Prediction",
+      "topic": "Machine Learning",
+      "abstract": "Predictive models that identify delayed research milestones early so supervisors can intervene.",
+      "sessionYear": "2025/2026"
+    },
+    {
+      "studentEmail": "student4@naub.edu.ng",
+      "title": "Usability Evaluation of Mobile-First Academic Portals in Nigeria",
+      "topic": "Human-Computer Interaction",
+      "abstract": "Evaluating mobile accessibility and usability of institutional research portals among students and academic staff.",
+      "sessionYear": "2025/2026"
+    }
+  ],
+  "announcements": [
+    {
+      "title": "Welcome to Collins Research Supervision",
+      "body": "Nigerian Army University Biu has launched Collins to support continuous research supervision. Submit progress on time, respond to feedback promptly, and use the chat channel for clarifications with your supervisor."
+    },
+    {
+      "title": "Proposal Submission Window",
+      "body": "All final-year students should ensure their research proposals are submitted through Collins before the departmental deadline. Late submissions without prior approval may affect progress tracking."
+    }
+  ]
+}
