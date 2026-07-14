@@ -2,7 +2,23 @@ import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
 const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefined };
-const adapter = new PrismaPg({ connectionString: process.env.DATABASE_URL });
+
+function databaseConnectionConfig() {
+  const connectionString = process.env.DATABASE_URL;
+  if (!connectionString) {
+    throw new Error("DATABASE_URL is not configured.");
+  }
+
+  const url = new URL(connectionString);
+  const needsSsl = !["localhost", "127.0.0.1"].includes(url.hostname);
+
+  return {
+    connectionString,
+    ...(needsSsl ? { ssl: { rejectUnauthorized: false } } : {}),
+  };
+}
+
+const adapter = new PrismaPg(databaseConnectionConfig());
 
 export const prisma =
   globalForPrisma.prisma ??
