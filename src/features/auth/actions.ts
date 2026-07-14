@@ -5,6 +5,7 @@ import { randomBytes } from "crypto";
 import { AuthError } from "next-auth";
 import { prisma } from "@/lib/prisma";
 import { signIn, signOut } from "@/lib/auth";
+import { verifyCredentials } from "@/lib/auth-credentials";
 import {
   forgotPasswordSchema,
   loginSchema,
@@ -14,6 +15,7 @@ import {
 import { writeAuditLog } from "@/lib/audit";
 import { sendPasswordResetEmail } from "@/lib/email";
 import { roleHome } from "@/lib/session";
+import { isDatabaseUnavailableError } from "@/lib/db-error";
 import type { ActionResult } from "@/types";
 import type { Role } from "@prisma/client";
 
@@ -35,31 +37,49 @@ export async function loginAction(
   }
 
   try {
+    const verified = await verifyCredentials(parsed.data.email, parsed.data.password);
+    if (!verified.ok) {
+      if (verified.reason === "unavailable") {
+        return {
+          success: false,
+          error: "The database is not responding right now. Please try again shortly.",
+        };
+      }
+      return { success: false, error: "Invalid email or password." };
+    }
+
     await signIn("credentials", {
       email: parsed.data.email,
       password: parsed.data.password,
       redirect: false,
     });
 
-    const user = await prisma.user.findUnique({
-      where: { email: parsed.data.email.toLowerCase() },
-      select: { id: true, role: true },
-    });
-
-    if (!user) {
-      return { success: false, error: "Invalid email or password." };
-    }
-
     await writeAuditLog({
-      actorId: user.id,
+      actorId: verified.user.id,
       action: "USER_LOGIN",
       entityType: "User",
-      entityId: user.id,
+      entityId: verified.user.id,
     });
 
-    return { success: true, data: { redirectTo: roleHome(user.role) } as unknown as undefined, message: roleHome(user.role) };
+    return {
+      success: true,
+      data: { redirectTo: roleHome(verified.user.role) } as unknown as undefined,
+      message: roleHome(verified.user.role),
+    };
   } catch (error) {
+    if (isDatabaseUnavailableError(error)) {
+      return {
+        success: false,
+        error: "The database is not responding right now. Please try again shortly.",
+      };
+    }
     if (error instanceof AuthError) {
+      if ("code" in error && error.code === "service_unavailable") {
+        return {
+          success: false,
+          error: "The database is not responding right now. Please try again shortly.",
+        };
+      }
       return { success: false, error: "Invalid email or password." };
     }
     // NextAuth may throw NEXT_REDIRECT; rethrow those

@@ -1,8 +1,7 @@
 import NextAuth from "next-auth";
 import "next-auth/jwt";
 import Credentials from "next-auth/providers/credentials";
-import bcrypt from "bcryptjs";
-import { prisma } from "@/lib/prisma";
+import { AuthDatabaseUnavailableError, verifyCredentials } from "@/lib/auth-credentials";
 import { loginSchema } from "@/lib/validations/auth";
 import type { Role } from "@prisma/client";
 
@@ -69,14 +68,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const parsed = loginSchema.safeParse(credentials);
         if (!parsed.success) return null;
 
-        const email = parsed.data.email.toLowerCase().trim();
-        const user = await prisma.user.findUnique({ where: { email } });
-        if (!user) return null;
-        if (user.status !== "ACTIVE") return null;
+        const result = await verifyCredentials(parsed.data.email, parsed.data.password);
+        if (!result.ok) {
+          if (result.reason === "unavailable") {
+            throw new AuthDatabaseUnavailableError();
+          }
+          return null;
+        }
 
-        const valid = await bcrypt.compare(parsed.data.password, user.passwordHash);
-        if (!valid) return null;
-
+        const { user } = result;
         return {
           id: user.id,
           email: user.email,
