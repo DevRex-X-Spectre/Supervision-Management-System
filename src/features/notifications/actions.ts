@@ -92,6 +92,12 @@ export async function getUnreadCount() {
         where: { userId: user.id, readAt: null },
       }),
     0,
-    `getUnreadCount:${user.id}`
+    `getUnreadCount:${user.id}`,
+    {
+      cacheKey: `unread-count:${user.id}`,
+      freshMs: 30_000,
+      staleMs: 10 * 60_000,
+      timeoutMs: 1_500,
+    }
   );
 }

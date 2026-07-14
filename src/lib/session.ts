@@ -1,14 +1,15 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { cache } from "react";
 import type { Role } from "@prisma/client";
 import type { SessionUser } from "@/types";
 
-export async function getCurrentUser(): Promise<SessionUser | null> {
+export const getCurrentUser = cache(async (): Promise<SessionUser | null> => {
   const session = await auth();
   if (!session?.user?.id) return null;
   if (session.user.status !== "ACTIVE") return null;
   return session.user as SessionUser;
-}
+});
 
 export async function requireUser(roles?: Role[]): Promise<SessionUser> {
   const user = await getCurrentUser();

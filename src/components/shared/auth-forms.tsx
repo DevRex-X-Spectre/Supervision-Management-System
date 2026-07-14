@@ -33,21 +33,26 @@ export function LoginForm() {
   }, [state, router]);
 
   return (
-    <form action={action} className="space-y-4">
+    <form action={action} className="space-y-5">
       <div className="space-y-2">
-        <Label htmlFor="email">Email address</Label>
+        <Label htmlFor="email" className="text-sm font-medium text-slate-600">
+          Email address
+        </Label>
         <Input
           id="email"
           name="email"
           type="email"
           autoComplete="email"
           placeholder="you@naub.edu.ng"
+          className="h-12 rounded-2xl border-slate-200 bg-white px-4 shadow-none"
           required
         />
       </div>
       <div className="space-y-2">
         <div className="flex items-center justify-between">
-          <Label htmlFor="password">Password</Label>
+          <Label htmlFor="password" className="text-sm font-medium text-slate-600">
+            Password
+          </Label>
           <Link href="/forgot-password" className="text-xs font-medium text-naub-green hover:underline">
             Forgot password?
           </Link>
@@ -56,10 +61,15 @@ export function LoginForm() {
           id="password"
           name="password"
           autoComplete="current-password"
+          className="h-12 rounded-2xl border-slate-200 bg-white px-4 shadow-none"
           required
         />
       </div>
-      <Button type="submit" className="w-full" disabled={pending}>
+      <Button
+        type="submit"
+        className="h-12 w-full rounded-full bg-naub-green text-white hover:bg-naub-green-dark"
+        disabled={pending}
+      >
         {pending ? <Spinner className="border-white/40 border-t-white" /> : null}
         Sign in
       </Button>
@@ -113,15 +123,18 @@ export function RegisterForm() {
   }, [state, router]);
 
   return (
-    <form action={action} className="space-y-4">
+    <form action={action} className="space-y-5">
       <div className="grid gap-4 sm:grid-cols-2">
         <div className="space-y-2">
-          <Label htmlFor="firstName">First name</Label>
+          <Label htmlFor="firstName" className="text-sm font-medium text-slate-600">
+            First name
+          </Label>
           <Input
             id="firstName"
             name="firstName"
             value={firstName}
             onChange={(e) => setFirstName(e.target.value)}
+            className="h-12 rounded-2xl border-slate-200 bg-white px-4 shadow-none"
             required
             autoComplete="given-name"
             aria-invalid={!!errors?.firstName}
@@ -129,12 +142,15 @@ export function RegisterForm() {
           <FieldError messages={errors?.firstName} />
         </div>
         <div className="space-y-2">
-          <Label htmlFor="lastName">Last name</Label>
+          <Label htmlFor="lastName" className="text-sm font-medium text-slate-600">
+            Last name
+          </Label>
           <Input
             id="lastName"
             name="lastName"
             value={lastName}
             onChange={(e) => setLastName(e.target.value)}
+            className="h-12 rounded-2xl border-slate-200 bg-white px-4 shadow-none"
             required
             autoComplete="family-name"
             aria-invalid={!!errors?.lastName}
@@ -143,7 +159,9 @@ export function RegisterForm() {
         </div>
       </div>
       <div className="space-y-2">
-        <Label htmlFor="email">Email address</Label>
+        <Label htmlFor="email" className="text-sm font-medium text-slate-600">
+          Email address
+        </Label>
         <Input
           id="email"
           name="email"
@@ -151,6 +169,7 @@ export function RegisterForm() {
           placeholder="you@naub.edu.ng"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          className="h-12 rounded-2xl border-slate-200 bg-white px-4 shadow-none"
           required
           autoComplete="email"
           aria-invalid={!!errors?.email}
@@ -160,13 +179,16 @@ export function RegisterForm() {
 
       {showRole ? (
         <div className="space-y-2 animate-fade-up">
-          <Label htmlFor="role">I am registering as</Label>
+          <Label htmlFor="role" className="text-sm font-medium text-slate-600">
+            I am registering as
+          </Label>
           <Select
             id="role"
             name="role"
             required
             value={role}
             onChange={(e) => setRole(e.target.value as "" | "STUDENT" | "SUPERVISOR")}
+            className="h-12 rounded-2xl border-slate-200 bg-white px-4 shadow-none"
             aria-invalid={!!errors?.role}
           >
             <option value="" disabled>
@@ -185,13 +207,16 @@ export function RegisterForm() {
       {showDetails ? (
         <div className="space-y-4 animate-fade-up">
           <div className="space-y-2">
-            <Label htmlFor="department">Department</Label>
+            <Label htmlFor="department" className="text-sm font-medium text-slate-600">
+              Department
+            </Label>
             <Input
               id="department"
               name="department"
               placeholder="e.g. Computer Science"
               value={department}
               onChange={(e) => setDepartment(e.target.value)}
+              className="h-12 rounded-2xl border-slate-200 bg-white px-4 shadow-none"
               required
               aria-invalid={!!errors?.department}
             />
@@ -200,13 +225,16 @@ export function RegisterForm() {
 
           {role === "STUDENT" ? (
             <div className="space-y-2">
-              <Label htmlFor="matricNumber">Matric number</Label>
+              <Label htmlFor="matricNumber" className="text-sm font-medium text-slate-600">
+                Matric number
+              </Label>
               <Input
                 id="matricNumber"
                 name="matricNumber"
                 placeholder="e.g. NAUB/CS/20/001"
                 value={matricNumber}
                 onChange={(e) => setMatricNumber(e.target.value)}
+                className="h-12 rounded-2xl border-slate-200 bg-white px-4 shadow-none"
                 required
                 autoComplete="off"
                 aria-invalid={!!errors?.matricNumber}
@@ -215,13 +243,16 @@ export function RegisterForm() {
             </div>
           ) : (
             <div className="space-y-2">
-              <Label htmlFor="staffId">Staff ID</Label>
+              <Label htmlFor="staffId" className="text-sm font-medium text-slate-600">
+                Staff ID
+              </Label>
               <Input
                 id="staffId"
                 name="staffId"
                 placeholder="e.g. NAUB-SUP-001"
                 value={staffId}
                 onChange={(e) => setStaffId(e.target.value)}
+                className="h-12 rounded-2xl border-slate-200 bg-white px-4 shadow-none"
                 required
                 autoComplete="off"
                 aria-invalid={!!errors?.staffId}
@@ -232,12 +263,15 @@ export function RegisterForm() {
 
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
+              <Label htmlFor="password" className="text-sm font-medium text-slate-600">
+                Password
+              </Label>
               <PasswordInput
                 id="password"
                 name="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
+                className="h-12 rounded-2xl border-slate-200 bg-white px-4 shadow-none"
                 required
                 autoComplete="new-password"
                 aria-invalid={!!errors?.password}
@@ -248,12 +282,15 @@ export function RegisterForm() {
               <FieldError messages={errors?.password} />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="confirmPassword">Confirm password</Label>
+              <Label htmlFor="confirmPassword" className="text-sm font-medium text-slate-600">
+                Confirm password
+              </Label>
               <PasswordInput
                 id="confirmPassword"
                 name="confirmPassword"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
+                className="h-12 rounded-2xl border-slate-200 bg-white px-4 shadow-none"
                 required
                 autoComplete="new-password"
                 aria-invalid={!!errors?.confirmPassword}
@@ -262,7 +299,11 @@ export function RegisterForm() {
             </div>
           </div>
 
-          <Button type="submit" className="w-full" disabled={pending}>
+          <Button
+            type="submit"
+            className="h-12 w-full rounded-full bg-naub-green text-white hover:bg-naub-green-dark"
+            disabled={pending}
+          >
             {pending ? <Spinner className="border-white/40 border-t-white" /> : null}
             Create account
           </Button>

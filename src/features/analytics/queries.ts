@@ -2,36 +2,86 @@ import { prisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/session";
 import { withDatabaseFallback } from "@/lib/db-error";
 
-export async function getStudentDashboardStats(studentId: string) {
-  const [project, submissions, pending, approved, notifications, deadlines] =
-    await withDatabaseFallback(
-      () =>
-        Promise.all([
-          prisma.researchProject.findUnique({
-            where: { studentId },
-            include: {
-              milestones: { orderBy: { sortOrder: "asc" } },
-              supervisor: {
-                select: { id: true, firstName: true, lastName: true, title: true, email: true },
-              },
+const emptyStudentDashboardData = {
+  project: null,
+  submissions: 0,
+  pending: 0,
+  approved: 0,
+  notifications: 0,
+  deadlines: [],
+  recent: [],
+  announcements: [],
+};
+
+export async function getStudentDashboardData(studentId: string) {
+  const dashboardData = await withDatabaseFallback(
+    async () => {
+      const [
+        project,
+        submissions,
+        pending,
+        approved,
+        notifications,
+        deadlines,
+        recent,
+        announcements,
+      ] = await Promise.all([
+        prisma.researchProject.findUnique({
+          where: { studentId },
+          include: {
+            milestones: { orderBy: { sortOrder: "asc" } },
+            supervisor: {
+              select: { id: true, firstName: true, lastName: true, title: true, email: true },
             },
-          }),
-          prisma.submission.count({ where: { studentId } }),
-          prisma.submission.count({ where: { studentId, status: "PENDING" } }),
-          prisma.submission.count({ where: { studentId, status: "APPROVED" } }),
-          prisma.notification.count({ where: { userId: studentId, readAt: null } }),
-          prisma.deadline.findMany({
-            where: {
-              project: { studentId },
-              dueAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
-            },
-            orderBy: { dueAt: "asc" },
-            take: 5,
-          }),
-        ]),
-      [null, 0, 0, 0, 0, []],
-      `getStudentDashboardStats:${studentId}`
-    );
+          },
+        }),
+        prisma.submission.count({ where: { studentId } }),
+        prisma.submission.count({ where: { studentId, status: "PENDING" } }),
+        prisma.submission.count({ where: { studentId, status: "APPROVED" } }),
+        prisma.notification.count({ where: { userId: studentId, readAt: null } }),
+        prisma.deadline.findMany({
+          where: {
+            project: { studentId },
+            dueAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+          },
+          orderBy: { dueAt: "asc" },
+          take: 5,
+        }),
+        prisma.submission.findMany({
+          where: { studentId },
+          orderBy: { submittedAt: "desc" },
+          take: 5,
+        }),
+        prisma.announcement.findMany({
+          where: { isActive: true },
+          orderBy: { createdAt: "desc" },
+          take: 3,
+        }),
+      ]);
+
+      return {
+        project,
+        submissions,
+        pending,
+        approved,
+        notifications,
+        deadlines,
+        recent,
+        announcements,
+      };
+    },
+    emptyStudentDashboardData,
+    `getStudentDashboardData:${studentId}`,
+    {
+      cacheKey: `student-dashboard:${studentId}`,
+      freshMs: 45_000,
+      staleMs: 15 * 60_000,
+      timeoutMs: 2_500,
+    }
+  );
+
+  const { project, submissions, pending, approved, notifications, deadlines, recent, announcements } =
+    dashboardData;
 
   const milestoneTotal = project?.milestones.length ?? 0;
   const milestoneDone =
@@ -47,6 +97,8 @@ export async function getStudentDashboardStats(studentId: string) {
     milestoneTotal,
     milestoneDone,
     completionRate: milestoneTotal ? Math.round((milestoneDone / milestoneTotal) * 100) : 0,
+    recent,
+    announcements,
   };
 }
 

@@ -8,7 +8,7 @@ import {
   MessageSquare,
 } from "lucide-react";
 import { requireUser } from "@/lib/session";
-import { getStudentDashboardStats } from "@/features/analytics/queries";
+import { getStudentDashboardData } from "@/features/analytics/queries";
 import { PageHeader } from "@/components/ui/page-header";
 import { StatCard } from "@/components/ui/stat-card";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
@@ -16,23 +16,12 @@ import { Button } from "@/components/ui/button";
 import { StatusBadge } from "@/components/ui/status-badge";
 import { formatDate, fullName, deadlineLabel } from "@/lib/utils";
 import { EmptyState } from "@/components/ui/empty-state";
-import { prisma } from "@/lib/prisma";
 
 export const metadata = { title: "Student dashboard" };
 
 export default async function StudentDashboardPage() {
   const user = await requireUser(["STUDENT"]);
-  const stats = await getStudentDashboardStats(user.id);
-  const recent = await prisma.submission.findMany({
-    where: { studentId: user.id },
-    orderBy: { submittedAt: "desc" },
-    take: 5,
-  });
-  const announcements = await prisma.announcement.findMany({
-    where: { isActive: true },
-    orderBy: { createdAt: "desc" },
-    take: 3,
-  });
+  const stats = await getStudentDashboardData(user.id);
 
   return (
     <div className="animate-fade-up">
@@ -173,10 +162,10 @@ export default async function StudentDashboardPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
-              {announcements.length === 0 ? (
+              {stats.announcements.length === 0 ? (
                 <p className="text-sm text-slate-500">No announcements at this time.</p>
               ) : (
-                announcements.map((a) => (
+                stats.announcements.map((a) => (
                   <div key={a.id} className="rounded-xl border border-slate-100 px-3 py-2.5">
                     <p className="text-sm font-medium text-slate-800">{a.title}</p>
                     <p className="mt-1 line-clamp-2 text-xs text-slate-500">{a.body}</p>
@@ -199,7 +188,7 @@ export default async function StudentDashboardPage() {
           </Button>
         </CardHeader>
         <CardContent>
-          {recent.length === 0 ? (
+          {stats.recent.length === 0 ? (
             <EmptyState
               icon={FileText}
               title="No submissions yet"
@@ -222,7 +211,7 @@ export default async function StudentDashboardPage() {
                   </tr>
                 </thead>
                 <tbody>
-                  {recent.map((s) => (
+                  {stats.recent.map((s) => (
                     <tr key={s.id} className="border-b border-slate-50">
                       <td className="py-3 font-medium text-slate-800">{s.title}</td>
                       <td className="py-3 text-slate-500">{formatDate(s.submittedAt)}</td>
