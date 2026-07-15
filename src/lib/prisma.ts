@@ -1,7 +1,9 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 
-const globalForPrisma = globalThis as unknown as { prisma: PrismaClient | undefined };
+const globalForPrisma = globalThis as unknown as {
+  prisma: PrismaClient | undefined;
+};
 
 function databaseConnectionConfig() {
   const connectionString = process.env.DATABASE_URL;
@@ -14,6 +16,10 @@ function databaseConnectionConfig() {
 
   return {
     connectionString,
+    max: Number(process.env.DATABASE_POOL_MAX ?? 2),
+    idleTimeoutMillis: 10_000,
+    connectionTimeoutMillis: 5_000,
+    maxLifetimeSeconds: 60,
     ...(needsSsl ? { ssl: { rejectUnauthorized: false } } : {}),
   };
 }
