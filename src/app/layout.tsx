@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Toaster } from "sonner";
+import { ProjectGuideChat } from "@/components/shared/project-guide-chat";
 import { INSTITUTION } from "@/lib/constants";
 import "./globals.css";
 
@@ -34,6 +35,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     <html lang="en" className={`${sans.variable} ${display.variable} h-full`}>
       <body className="min-h-full font-sans antialiased">
         {children}
+        <ProjectGuideChat />
         <Toaster richColors position="top-right" closeButton />
       </body>
     </html>
