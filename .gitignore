@@ -38,6 +38,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+NAUB_CSPMS_Chapters_1_to_5.docx
+CSPMS Project.docx
 
 # prisma
 prisma/*.db
