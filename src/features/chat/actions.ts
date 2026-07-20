@@ -13,10 +13,7 @@ function orderedPair(a: string, b: string) {
   return a < b ? ([a, b] as const) : ([b, a] as const);
 }
 
-function conversationTypeFor(
-  roleA: string,
-  roleB: string
-): ConversationType {
+function conversationTypeFor(roleA: string, roleB: string): ConversationType {
   const roles = new Set([roleA, roleB]);
   if (roles.has("COORDINATOR") && roles.has("STUDENT")) return "COORDINATOR_STUDENT";
   if (roles.has("COORDINATOR") && roles.has("SUPERVISOR")) return "COORDINATOR_SUPERVISOR";
@@ -33,7 +30,6 @@ async function canMessage(senderId: string, recipientId: string) {
     return { ok: false as const, reason: "Messaging is only available for active accounts." };
   }
 
-  // Student <-> assigned supervisor
   if (sender.role === "STUDENT" && recipient.role === "SUPERVISOR") {
     if (sender.assignedSupervisorId !== recipient.id) {
       return { ok: false as const, reason: "You can only message your assigned supervisor." };
@@ -47,7 +43,6 @@ async function canMessage(senderId: string, recipientId: string) {
     return { ok: true as const, sender, recipient };
   }
 
-  // Coordinator can message any student or supervisor
   if (sender.role === "COORDINATOR" && (recipient.role === "STUDENT" || recipient.role === "SUPERVISOR")) {
     return { ok: true as const, sender, recipient };
   }
@@ -93,21 +88,41 @@ export async function sendMessageAction(
   formData: FormData
 ): Promise<ActionResult<{ messageId: string }>> {
   const user = await requireUser();
+
+  let files: unknown[] = [];
+  const filesRaw = formData.get("files");
+  if (typeof filesRaw === "string" && filesRaw) {
+    try {
+      files = JSON.parse(filesRaw);
+    } catch {
+      return { success: false, error: "Invalid document attachment." };
+    }
+  }
+
   const parsed = messageSchema.safeParse({
     conversationId: formData.get("conversationId") || undefined,
     recipientId: formData.get("recipientId"),
-    content: formData.get("content"),
+    content: formData.get("content") ?? "",
+    files,
   });
 
   if (!parsed.success) {
-    return { success: false, error: "Message cannot be empty." };
+    return {
+      success: false,
+      error: parsed.error.issues[0]?.message ?? "Write a message or attach a document.",
+    };
+  }
+
+  // Document attachments only for student and supervisor chat participants
+  if ((parsed.data.files?.length ?? 0) > 0) {
+    if (user.role !== "STUDENT" && user.role !== "SUPERVISOR") {
+      return { success: false, error: "Only students and supervisors can attach documents in chat." };
+    }
   }
 
   const allowed = await canMessage(user.id, parsed.data.recipientId);
   if (!allowed.ok) return { success: false, error: allowed.reason };
 
-  // Coordinators can chat, but other coordinators cannot read chat content of student-supervisor threads.
-  // Access control is enforced when loading messages.
   let conversationId = parsed.data.conversationId;
   if (!conversationId) {
     const conversation = await getOrCreateConversation(parsed.data.recipientId);
@@ -125,16 +140,29 @@ export async function sendMessageAction(
     }
   }
 
+  const text = parsed.data.content?.trim() ?? "";
+  const fileList = parsed.data.files ?? [];
+
   const message = await prisma.message.create({
     data: {
       conversationId,
       senderId: user.id,
-      content: parsed.data.content.trim(),
+      content: text || (fileList.length ? "Shared a document" : ""),
+      files: {
+        create: fileList.map((f) => ({
+          fileName: f.fileName,
+          fileUrl: f.fileUrl,
+          fileKey: f.fileKey,
+          fileSize: f.fileSize,
+          mimeType: f.mimeType,
+        })),
+      },
     },
     include: {
       sender: {
         select: { id: true, firstName: true, lastName: true, role: true, title: true },
       },
+      files: true,
     },
   });
 
@@ -143,25 +171,38 @@ export async function sendMessageAction(
     data: { lastMessageAt: message.createdAt },
   });
 
+  const payload = {
+    id: message.id,
+    conversationId,
+    content: message.content,
+    senderId: message.senderId,
+    createdAt: message.createdAt.toISOString(),
+    sender: message.sender,
+    readAt: null as string | null,
+    files: message.files.map((f) => ({
+      id: f.id,
+      fileName: f.fileName,
+      fileUrl: f.fileUrl,
+      fileKey: f.fileKey,
+      fileSize: f.fileSize,
+      mimeType: f.mimeType,
+    })),
+  };
+
   try {
-    await pusherServer.trigger(`private-conversation-${conversationId}`, "new-message", {
-      id: message.id,
-      conversationId,
-      content: message.content,
-      senderId: message.senderId,
-      createdAt: message.createdAt.toISOString(),
-      sender: message.sender,
-      readAt: null,
-    });
+    await pusherServer.trigger(`private-conversation-${conversationId}`, "new-message", payload);
   } catch (error) {
     console.error("Pusher message trigger failed", error);
   }
 
+  const hasDocs = fileList.length > 0;
   await createNotification({
     userId: parsed.data.recipientId,
     type: "MESSAGE",
-    title: "New message",
-    body: `${user.firstName} ${user.lastName} sent you a message.`,
+    title: hasDocs ? "New message with document" : "New message",
+    body: hasDocs
+      ? `${user.firstName} ${user.lastName} shared a document in chat.`
+      : `${user.firstName} ${user.lastName} sent you a message.`,
     link: chatPathFor(allowed.recipient.role, conversationId),
     relatedEntityType: "Conversation",
     relatedEntityId: conversationId,
@@ -218,6 +259,7 @@ export async function listConversationsForUser() {
           createdAt: true,
           senderId: true,
           readAt: true,
+          files: { select: { id: true, fileName: true }, take: 1 },
         },
       },
     },
@@ -226,11 +268,19 @@ export async function listConversationsForUser() {
 
   return conversations.map((c) => {
     const other = c.participantAId === user.id ? c.participantB : c.participantA;
+    const last = c.messages[0] ?? null;
     return {
       id: c.id,
       type: c.type,
       other,
-      lastMessage: c.messages[0] ?? null,
+      lastMessage: last
+        ? {
+            ...last,
+            content:
+              last.content ||
+              (last.files?.length ? `Document: ${last.files[0].fileName}` : ""),
+          }
+        : null,
       lastMessageAt: c.lastMessageAt,
     };
   });
@@ -245,8 +295,6 @@ export async function getMessages(conversationId: string) {
 
   if (!conversation) return null;
 
-  // Only direct participants may read message content.
-  // Coordinators who are not participants cannot inspect student-supervisor chats.
   if (
     conversation.participantAId !== user.id &&
     conversation.participantBId !== user.id
@@ -254,7 +302,6 @@ export async function getMessages(conversationId: string) {
     return null;
   }
 
-  // Mark others' messages as read
   await prisma.message.updateMany({
     where: {
       conversationId,
@@ -274,6 +321,16 @@ export async function getMessages(conversationId: string) {
           lastName: true,
           role: true,
           title: true,
+        },
+      },
+      files: {
+        select: {
+          id: true,
+          fileName: true,
+          fileUrl: true,
+          fileKey: true,
+          fileSize: true,
+          mimeType: true,
         },
       },
     },

@@ -31,11 +31,32 @@ export const createUserByCoordinatorSchema = z.object({
   temporaryPassword: z.string().min(8),
 });
 
-export const messageSchema = z.object({
-  conversationId: z.string().cuid().optional(),
-  recipientId: z.string().cuid(),
-  content: z.string().min(1, "Message cannot be empty").max(5000),
+export const chatFileSchema = z.object({
+  fileName: z.string().min(1),
+  fileUrl: z.string().url(),
+  fileKey: z.string().min(1),
+  fileSize: z.number().int().positive().max(16 * 1024 * 1024),
+  mimeType: z.string().min(1),
 });
+
+export const messageSchema = z
+  .object({
+    conversationId: z.string().cuid().optional(),
+    recipientId: z.string().cuid(),
+    content: z.string().max(5000).optional().default(""),
+    files: z.array(chatFileSchema).max(5).optional().default([]),
+  })
+  .superRefine((data, ctx) => {
+    const hasText = Boolean(data.content?.trim());
+    const hasFiles = (data.files?.length ?? 0) > 0;
+    if (!hasText && !hasFiles) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Write a message or attach a document.",
+        path: ["content"],
+      });
+    }
+  });
 
 export const announcementSchema = z.object({
   title: z.string().min(3).max(200),
